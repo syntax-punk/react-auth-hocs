@@ -1,6 +1,6 @@
 {
   "name": "react-auth-hocs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React HOC providing OAuth functionalifity to components.",
   "main": "lib/index.js",
   "author": "vooogieJames",
