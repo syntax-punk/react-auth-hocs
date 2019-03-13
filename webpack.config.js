@@ -1,5 +1,9 @@
 const path = require('path');
 module.exports = {
+    output: {
+        path: path.join(__dirname, "demo/dist"),
+        filename: "bundle.js"
+    },
     module: {
         rules: [
             {
@@ -16,10 +20,6 @@ module.exports = {
                 }
             }
         ]
-    },
-    output: {
-        path: path.join(__dirname, "demo/dist"),
-        filename: "bundle.js"
     },
     resolve: {
         extensions: [".js", ".jsx"]

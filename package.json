@@ -2,7 +2,7 @@
   "name": "react-auth-hocs",
   "version": "0.0.1",
   "description": "React HOC providing OAuth functionalifity to components.",
-  "main": "dist/index.js",
+  "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development",
