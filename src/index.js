@@ -1,4 +1,4 @@
 import withGoogleOAuth from './GoogleOAuth';
-export default {
+export {
     withGoogleOAuth
 }
