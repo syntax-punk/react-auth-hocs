@@ -3,7 +3,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {addScript} from '../utils';
 
-const withGoogleOAuth = (WrappedComponent) => {
+let __onSuccess;
+let __onError;
+let __authReady;
+
+
+const withGoogleOAuth = (WrappedComponent, {onSuccess, onError, authReady}) => {
 
   class GoogleOAuth extends Component {
 
@@ -13,6 +18,9 @@ const withGoogleOAuth = (WrappedComponent) => {
         gapiLoaded: false,
       };
       this.gapiUrl = "https://apis.google.com/js/client.js";
+      __onSuccess = onSuccess;
+      __onError = onError;
+      __authReady = authReady;
     }
   
     componentDidMount() {
@@ -48,36 +56,42 @@ const withGoogleOAuth = (WrappedComponent) => {
       }
     }
 
-    authorize = () => {
+    authorize = (update={}) => {
       if (!this.state.gapiLoaded) { return; }
       if (this.props.preAuthorize) {
         this.props.preAuthorize()
       }
       window.gapi.auth2.authorize(
-        this._getAuthParams(),
+        {...this._getAuthParams(), ...update},
         (response) => {
+          const {onError, onSuccess} = this.props;
           if (response.error) {
-            this.props.onError(response);
+            if (onError) {onError(response)}
+            if (__onError) {__onError(response)}
           } else {
-            this.props.onSuccess(response);
+            if (onSuccess) {onSuccess(response)}
+            if (__onSuccess) {__onSuccess(response)}
           }
         }
       );
     }
 
     render() {
+      if (__authReady) {__authReady(this.authorize)}
       const updatedProps = {
         ...this.props, 
         ...this.state,
         authorize: this.authorize
       };
-      return <WrappedComponent {...updatedProps} />;
+      return this.state.gapiLoaded
+        ? <WrappedComponent {...updatedProps} />
+        : null
     }
   }
 
   GoogleOAuth.propTypes = {
-    onSuccess: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
+    onSuccess: PropTypes.func,
+    onError: PropTypes.func,
     preAuthorize: PropTypes.func,
     authParams: PropTypes.object,
     clientId: PropTypes.string,
